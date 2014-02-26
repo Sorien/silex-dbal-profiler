@@ -14,10 +14,10 @@ namespace Sorien\Provider;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Logging\LoggerChain;
-use Sorien\Doctrine\DataCollector\DoctrineDataCollector;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Sorien\Logger\DbalLogger;
+use Sorien\DataCollector\DoctrineDataCollector;
 
 /**
  * Silex Doctrine DBAL Profiler provider.
