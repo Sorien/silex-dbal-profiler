@@ -1,0 +1,26 @@
+{
+    "name": "sorien/silex-dbal-profiler",
+    "description": "Doctrine DBAL Profiler for Silex",
+    "keywords": [
+        "silex",
+        "profiler",
+        "doctrine",
+        "dbal"
+    ],
+    "homepage": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stanislav Turza",
+            "role": "Developer"
+        }
+    ],
+    "require-dev": {
+        "silex/silex": "~1.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Sorien": "src"
+        }
+    }
+}
