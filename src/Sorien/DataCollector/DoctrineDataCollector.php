@@ -26,21 +26,26 @@ use Symfony\Component\HttpFoundation\Response;
 class DoctrineDataCollector extends DataCollector
 {
     private $loggers = array();
-    private $db;
 
-    function __construct(Connection $db)
+    /**
+     * @var Connection[] $dbs
+     */
+    private $dbs;
+
+    function __construct($dbs)
     {
-        $this->db = $db;
+        $this->dbs = $dbs;
     }
 
     /**
      * Adds the stack logger for a connection.
      *
+     * @param string     $name
      * @param DebugStack $logger
      */
-    public function addLogger(DebugStack $logger)
+    public function addLogger($name, DebugStack $logger)
     {
-        $this->loggers[] = $logger;
+        $this->loggers[$name] = $logger;
     }
 
     /**
@@ -49,8 +54,8 @@ class DoctrineDataCollector extends DataCollector
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $queries = array();
-        foreach ($this->loggers as $logger) {
-            $queries[] = $this->sanitizeQueries($logger->queries);
+        foreach ($this->loggers as $name => $logger) {
+            $queries[$name] = $this->sanitizeQueries($logger->queries, $name);
         }
 
         $this->data = array(
@@ -88,16 +93,16 @@ class DoctrineDataCollector extends DataCollector
         return 'db';
     }
 
-    private function sanitizeQueries($queries)
+    private function sanitizeQueries($queries, $connectionName)
     {
         foreach ($queries as $i => $query) {
-            $queries[$i] = $this->sanitizeQuery($query);
+            $queries[$i] = $this->sanitizeQuery($query, $connectionName);
         }
 
         return $queries;
     }
 
-    private function sanitizeQuery($query)
+    private function sanitizeQuery($query, $connectionName)
     {
         $query['params'] = (array) $query['params'];
         foreach ($query['params'] as $j => &$param) {
@@ -109,7 +114,7 @@ class DoctrineDataCollector extends DataCollector
                 }
                 if ($type instanceof Type) {
                     $query['types'][$j] = $type->getBindingType();
-                    $param = $type->convertToDatabaseValue($param, $this->db->getDatabasePlatform());
+                    $param = $type->convertToDatabaseValue($param, $this->dbs[$connectionName]->getDatabasePlatform());
                 }
             }
 

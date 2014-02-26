@@ -36,7 +36,11 @@
 
 {% block panel %}
     <h2>Queries</h2>
-    {% for queries in collector.queries %}
+    {% set count = collector.queries|length %}
+    {% for name, queries in collector.queries %}
+        {% if count > 1 %}
+            <h3>{{ name }}</h3>
+        {% endif %}
         {% if queries is empty %}
             <p>
                 <em>No queries.</em>

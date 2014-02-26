@@ -30,19 +30,26 @@ class DoctrineProfilerServiceProvider implements ServiceProviderInterface
     {
         $dataCollectors = $app['data_collectors'];
         $dataCollectors['db'] = $app->share(function ($app) {
-            /** @var Connection $db */
-            $db = $app['db'];
-            $collector = new DoctrineDataCollector($db);
 
-            $loggerChain = new LoggerChain();
-            $logger = new DebugStack();
+            $collector = new DoctrineDataCollector($app['dbs']);
+            $timeLogger = new DbalLogger($app['logger'], $app['stopwatch']);
 
-            $loggerChain->addLogger($logger);
-            $loggerChain->addLogger(new DbalLogger($app['logger'], $app['stopwatch']));
+            foreach ($app['dbs.options'] as $name => $params)
+            {
+                /** @var Connection $db */
+                $db = $app['dbs'][$name];
 
-            $db->getConfiguration()->setSQLLogger($loggerChain);
+                $loggerChain = new LoggerChain();
+                $logger = new DebugStack();
 
-            $collector->addLogger($logger);
+                $loggerChain->addLogger($logger);
+                $loggerChain->addLogger($timeLogger);
+
+                $db->getConfiguration()->setSQLLogger($loggerChain);
+
+                $collector->addLogger($name, $logger);
+            }
+
             return $collector;
         });
         $app['data_collectors'] = $dataCollectors;
@@ -51,7 +58,8 @@ class DoctrineProfilerServiceProvider implements ServiceProviderInterface
         $dataCollectorTemplates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
         $app['data_collector.templates'] = $dataCollectorTemplates;
 
-        $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader, $app) {
+        $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader) {
+            /** @var \Twig_Loader_Filesystem $loader */
             $loader->addPath(dirname(__DIR__).'/Resources/views', 'DoctrineBundle');
             return $loader;
         }));
