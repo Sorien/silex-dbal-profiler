@@ -17,10 +17,10 @@ use Doctrine\DBAL\Logging\LoggerChain;
 use Sorien\Doctrine\DataCollector\DoctrineDataCollector;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Sorien\DbalLogger;
+use Sorien\Logger\DbalLogger;
 
 /**
- * Symfony Web Profiler provider.
+ * Silex Doctrine DBAL Profiler provider.
  *
  * @author Stanislav Turza
  */
