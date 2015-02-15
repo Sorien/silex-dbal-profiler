@@ -123,6 +123,12 @@ class DoctrineDataCollector extends DataCollector
                 $query['explainable'] = false;
             }
         }
+        if ($query['sql'] instanceof \Doctrine\DBAL\Query\QueryBuilder) {
+            $queryBuilder = $query['sql'];
+            $sql = $queryBuilder->getSQL();
+            unset($query['sql']);
+            $query['sql'] = $sql;
+        }
 
         return $query;
     }
