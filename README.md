@@ -4,7 +4,7 @@ Composer
 
 ```json
     "require": {
-        "sorien/silex-dbal-profiler": "1.1.0"
+        "sorien/silex-dbal-profiler": "~1.1"
     }
 ```
 

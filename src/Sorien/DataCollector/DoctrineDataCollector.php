@@ -13,6 +13,7 @@ namespace Sorien\DataCollector;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpFoundation\Request;
@@ -123,11 +124,9 @@ class DoctrineDataCollector extends DataCollector
                 $query['explainable'] = false;
             }
         }
-        if ($query['sql'] instanceof \Doctrine\DBAL\Query\QueryBuilder) {
-            $queryBuilder = $query['sql'];
-            $sql = $queryBuilder->getSQL();
-            unset($query['sql']);
-            $query['sql'] = $sql;
+
+        if ($query['sql'] instanceof QueryBuilder) {
+            $query['sql'] = $query['sql']->getSQL();
         }
 
         return $query;
