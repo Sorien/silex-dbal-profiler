@@ -14,8 +14,8 @@ namespace Sorien\Provider;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Logging\LoggerChain;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Sorien\Logger\DbalLogger;
 use Sorien\DataCollector\DoctrineDataCollector;
 
@@ -26,10 +26,10 @@ use Sorien\DataCollector\DoctrineDataCollector;
  */
 class DoctrineProfilerServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $dataCollectors = $app['data_collectors'];
-        $dataCollectors['db'] = $app->share(function ($app) {
+        $dataCollectors['db'] = function ($app) {
 
             $collector = new DoctrineDataCollector($app['dbs']);
             $timeLogger = new DbalLogger($app['logger'], $app['stopwatch']);
@@ -51,18 +51,18 @@ class DoctrineProfilerServiceProvider implements ServiceProviderInterface
             }
 
             return $collector;
-        });
+        };
         $app['data_collectors'] = $dataCollectors;
 
         $dataCollectorTemplates = $app['data_collector.templates'];
         $dataCollectorTemplates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
         $app['data_collector.templates'] = $dataCollectorTemplates;
 
-        $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader) {
+        $app['twig.loader.filesystem'] = $app->extend('twig.loader.filesystem', function ($loader) {
             /** @var \Twig_Loader_Filesystem $loader */
             $loader->addPath(dirname(__DIR__).'/Resources/views', 'DoctrineBundle');
             return $loader;
-        }));
+        });
     }
 
     public function boot(Application $app)
