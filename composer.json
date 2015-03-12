@@ -15,12 +15,18 @@
             "role": "Developer"
         }
     ],
-    "require-dev": {
-        "silex/silex": "~1.0"
+    "require": {
+        "silex/silex": "2.0.*@dev",
+        "silex/web-profiler": "2.0.*@dev"
     },
     "autoload": {
         "psr-0": {
             "Sorien": "src"
         }
-    }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }    
 }
