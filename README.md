@@ -11,10 +11,6 @@ Composer
 Register
 
 ```php
-    $app->register($p = new Silex\Provider\WebProfilerServiceProvider(), array(
-        ...
-    ));
-    $app->mount('/_profiler', $p);
-
+    $app->register(new Silex\Provider\WebProfilerServiceProvider(), array(...));
     $app->register(new Sorien\Provider\DoctrineProfilerServiceProvider());
 ```
