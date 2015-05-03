@@ -28,31 +28,36 @@ class DoctrineProfilerServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $dataCollectors = $app['data_collectors'];
-        $dataCollectors['db'] = function ($app) {
 
-            $collector = new DoctrineDataCollector($app['dbs']);
-            $timeLogger = new DbalLogger($app['logger'], $app['stopwatch']);
+        $app->extend('data_collectors', function ($collectors, $app) {
 
-            foreach ($app['dbs.options'] as $name => $params)
-            {
-                /** @var Connection $db */
-                $db = $app['dbs'][$name];
+            $collectors['db'] = function ($app) {
 
-                $loggerChain = new LoggerChain();
-                $logger = new DebugStack();
+                $collector = new DoctrineDataCollector($app['dbs']);
+                $timeLogger = new DbalLogger($app['logger'], $app['stopwatch']);
 
-                $loggerChain->addLogger($logger);
-                $loggerChain->addLogger($timeLogger);
+                foreach ($app['dbs.options'] as $name => $params)
+                {
+                    /** @var Connection $db */
+                    $db = $app['dbs'][$name];
 
-                $db->getConfiguration()->setSQLLogger($loggerChain);
+                    $loggerChain = new LoggerChain();
+                    $logger = new DebugStack();
 
-                $collector->addLogger($name, $logger);
-            }
+                    $loggerChain->addLogger($logger);
+                    $loggerChain->addLogger($timeLogger);
 
-            return $collector;
-        };
-        $app['data_collectors'] = $dataCollectors;
+                    $db->getConfiguration()->setSQLLogger($loggerChain);
+
+                    $collector->addLogger($name, $logger);
+
+                }
+
+                return $collector;
+            };
+
+            return $collectors;
+        });
 
         $dataCollectorTemplates = $app['data_collector.templates'];
         $dataCollectorTemplates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
