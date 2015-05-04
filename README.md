@@ -1,5 +1,7 @@
 ## Install
 
+#### Silex 2 / Pimple 3 
+
 Composer
 
 ```json
@@ -8,7 +10,17 @@ Composer
     }
 ```
 
-Register
+#### Silex 1.* 
+
+Composer
+
+```json
+    "require": {
+        "sorien/silex-dbal-profiler": "~1.1"
+    }
+```
+
+##Register
 
 ```php
     $app->register(new Silex\Provider\WebProfilerServiceProvider(), array(...));
