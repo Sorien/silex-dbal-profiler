@@ -1,28 +1,26 @@
-## Install
+silex-dbal-profiler
+===================
 
-#### Silex 2 / Pimple 3 
+Provides missing Doctrine database queries logging for [Silex Web Profiler](https://github.com/silexphp/Silex-WebProfiler) 
 
-Composer
+Installation
+------------
+Install the silex-dbal-profiler using [composer](http://getcomposer.org/).  This project uses [sematic versioning](http://semver.org/).
 
-```json
-    "require": {
-        "sorien/silex-dbal-profiler": "~2.0@dev"
-    }
+**Silex 2.0**
+
+```bash
+composer require sorien/silex-dbal-profiler "~2.0@dev"
 ```
 
-#### Silex 1.* 
+**Silex 1.x**
 
-Composer
-
-```json
-    "require": {
-        "sorien/silex-dbal-profiler": "~1.1"
-    }
+```bash
+composer require sorien/silex-dbal-profiler "~1.1"
 ```
 
-##Register
-
+Registering
+-----------
 ```php
-    $app->register(new Silex\Provider\WebProfilerServiceProvider(), array(...));
     $app->register(new Sorien\Provider\DoctrineProfilerServiceProvider());
 ```
