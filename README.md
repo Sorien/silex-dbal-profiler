@@ -22,5 +22,7 @@ composer require sorien/silex-dbal-profiler "~1.1"
 Registering
 -----------
 ```php
-    $app->register(new Sorien\Provider\DoctrineProfilerServiceProvider());
+$app->register(new Sorien\Provider\DoctrineProfilerServiceProvider());
 ```
+
+Be sure to do this after registering `WebProfilerServiceProvider`.
