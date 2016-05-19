@@ -10,7 +10,7 @@ Install the silex-dbal-profiler using [composer](http://getcomposer.org/).  This
 **Silex 2.0**
 
 ```bash
-composer require sorien/silex-dbal-profiler "~2.0@dev"
+composer require sorien/silex-dbal-profiler "~2.0"
 ```
 
 **Silex 1.x**
