@@ -16,8 +16,8 @@
         }
     ],
     "require": {
-        "silex/silex": "~2.0@dev",
-        "silex/web-profiler": "~2.0@dev"
+        "silex/silex": "~2.0",
+        "silex/web-profiler": "~2.0"
     },
     "autoload": {
         "psr-0": {
