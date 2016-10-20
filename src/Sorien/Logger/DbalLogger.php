@@ -50,30 +50,30 @@ class DbalLogger implements SQLLogger
         }
 
         if (is_array($params)) {
-            foreach ($params as $index => $param) {
-                if (!is_string($params[$index])) {
-                    continue;
+            array_walk($params, function(&$param) {
+                if (!is_string($param)) {
+                    return;
                 }
 
                 // non utf-8 strings break json encoding
-                if (!preg_match('#[\p{L}\p{N} ]#u', $params[$index])) {
-                    $params[$index] = self::BINARY_DATA_VALUE;
-                    continue;
+                if (!preg_match('#[\p{L}\p{N} ]#u', $param)) {
+                    $param = self::BINARY_DATA_VALUE;
+                    return;
                 }
 
                 // detect if the too long string must be shorten
-                if (function_exists('mb_detect_encoding') && false !== $encoding = mb_detect_encoding($params[$index])) {
-                    if (self::MAX_STRING_LENGTH < mb_strlen($params[$index], $encoding)) {
-                        $params[$index] = mb_substr($params[$index], 0, self::MAX_STRING_LENGTH - 6, $encoding).' [...]';
-                        continue;
+                if (function_exists('mb_detect_encoding') && false !== $encoding = mb_detect_encoding($param)) {
+                    if (self::MAX_STRING_LENGTH < mb_strlen($param, $encoding)) {
+                        $param = mb_substr($param, 0, self::MAX_STRING_LENGTH - 6, $encoding).' [...]';
+                        return;
                     }
                 } else {
-                    if (self::MAX_STRING_LENGTH < strlen($params[$index])) {
-                        $params[$index] = substr($params[$index], 0, self::MAX_STRING_LENGTH - 6).' [...]';
-                        continue;
+                    if (self::MAX_STRING_LENGTH < strlen($param)) {
+                        $param = substr($param, 0, self::MAX_STRING_LENGTH - 6).' [...]';
+                        return;
                     }
                 }
-            }
+            });
         }
 
         if (null !== $this->logger) {
